@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useImperativeHandle } from 'react'
 import { ImagePlus, X, Loader2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -9,7 +9,11 @@ interface ImageFile {
     preview: string
 }
 
-export function ImageUpload() {
+export interface ImageUploadRef {
+    addFiles: (files: FileList) => void;
+}
+
+export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => {
     const [isDragging, setIsDragging] = useState(false)
     const [images, setImages] = useState<ImageFile[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -98,6 +102,12 @@ export function ImageUpload() {
             return updated
         })
     }
+
+    useImperativeHandle(ref, () => ({
+        addFiles: (files: FileList) => {
+            handleFiles(files);
+        }
+    }));
 
     return (
         <div className="w-full">
@@ -209,4 +219,5 @@ export function ImageUpload() {
             </AnimatePresence>
         </div>
     )
-}
+})
+ImageUpload.displayName = 'ImageUpload'

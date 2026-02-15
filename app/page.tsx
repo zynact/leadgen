@@ -1,8 +1,40 @@
-import {ImageUpload} from '@/components/image-upload'
+'use client'
+
+import {useRef, useEffect} from "react";
+import {ImageUpload, ImageUploadRef} from '@/components/image-upload'
 import {Button} from "@/components/custom/Button";
-import {ThemeToggle} from "@/components/theme-toggle";
 
 export default function Page() {
+    const imageUploadRef = useRef<ImageUploadRef>(null);
+
+    useEffect(() => {
+        const handlePaste = (event: ClipboardEvent) => {
+            const items = event.clipboardData?.items;
+            if (items) {
+                const files = [];
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        const file = items[i].getAsFile();
+                        if (file) {
+                            files.push(file);
+                        }
+                    }
+                }
+                if (files.length > 0) {
+                    const dataTransfer = new DataTransfer();
+                    files.forEach(file => dataTransfer.items.add(file));
+                    imageUploadRef.current?.addFiles(dataTransfer.files);
+                }
+            }
+        };
+
+        window.addEventListener('paste', handlePaste);
+
+        return () => {
+            window.removeEventListener('paste', handlePaste);
+        };
+    }, []);
+
     return (
         <div className="dark:bg-gray-900">
             {/* Header */}
@@ -25,9 +57,9 @@ export default function Page() {
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-all">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Upload Your Image</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop or click to select a file from your device.</p>
+                            <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop, paste, or click to select a file from your device.</p>
                         </div>
-                        <ImageUpload/>
+                        <ImageUpload ref={imageUploadRef} />
                         <div className="mt-10 flex justify-end">
                             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
                                 Extract Now
