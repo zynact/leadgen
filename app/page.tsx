@@ -6,12 +6,12 @@ export default function Page() {
     return (
         <div className="dark:bg-gray-900">
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-gray-800 border-b-[1px]">
+                <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-20">
                     <div className="flex justify-between items-center py-4">
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Snap Extract</h1>
                         <div className="flex items-center space-x-4">
-                            <ThemeToggle />
+                            {/*<ThemeToggle />*/}
                             <Button variant="ghost" className="text-gray-600 dark:text-gray-300">Sign in</Button>
                             <Button className="bg-blue-600 hover:bg-blue-700 text-white">Sign up</Button>
                         </div>
