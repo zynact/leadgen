@@ -1,29 +1,41 @@
-import { ImageUpload } from '@/components/image-upload'
+import {ImageUpload} from '@/components/image-upload'
 import {Button} from "@/components/custom/Button";
+import {ThemeToggle} from "@/components/theme-toggle";
 
 export default function Page() {
-  return (
-    <main className="min-h-screen bg-[#f5f5fa]">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto px-6 py-6 flex justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Snap Extract</h1>
-          <p className="text-red-500 mt-2 text-bold">
-            Sign up
-          </p>
-        </div>
-      </header>
+    return (
+        <div className="dark:bg-gray-900">
+            {/* Header */}
+            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center py-4">
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Snap Extract</h1>
+                        <div className="flex items-center space-x-4">
+                            <ThemeToggle />
+                            <Button variant="ghost" className="text-gray-600 dark:text-gray-300">Sign in</Button>
+                            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Sign up</Button>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-      {/* Main Content */}
-        <section className="max-w-2xl mx-auto px-6 py-20">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-8">Paste your image below</h2>
-            <ImageUpload/>
-            <div className="mt-8 flex justify-center">
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-lg shadow-md">
-                    Submit
-                </Button>
-            </div>
-        </section>
-    </main>
-  )
+            {/* Main Content */}
+            <main className="flex items-center justify-center min-h-screen pt-20 bg-gray-50 dark:bg-gray-900">
+                <div className="w-full max-w-2xl px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-all">
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Upload Your Image</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop or click to select a file from your device.</p>
+                        </div>
+                        <ImageUpload/>
+                        <div className="mt-10 flex justify-end">
+                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
+                                Extract Now
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    )
 }
