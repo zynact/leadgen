@@ -3,6 +3,7 @@
 import {useRef, useEffect} from "react";
 import {ImageUpload, ImageUploadRef} from '@/components/image-upload'
 import {Button} from "@/components/custom/Button";
+import imageProcess from "@/lib/api/image-process";
 
 export default function Page() {
     const imageUploadRef = useRef<ImageUploadRef>(null);
@@ -38,7 +39,8 @@ export default function Page() {
     return (
         <div className="dark:bg-gray-900">
             {/* Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-gray-800 border-b-[1px]">
+            <header
+                className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm border-gray-800 border-b-[1px]">
                 <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-20">
                     <div className="flex justify-between items-center py-4">
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Snap Extract</h1>
@@ -57,11 +59,27 @@ export default function Page() {
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-all">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Upload Your Image</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop, paste, or click to select a file from your device.</p>
+                            <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop, paste, or click to
+                                select a file from your device.</p>
                         </div>
-                        <ImageUpload ref={imageUploadRef} />
+                        <ImageUpload ref={imageUploadRef}/>
                         <div className="mt-10 flex justify-end">
-                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
+                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
+                                    onClick={async () => {
+                                        const files = imageUploadRef.current?.getFiles();
+                                        if (files && files.length > 0) {
+                                            try {
+                                                const response = await imageProcess(files[0]);
+                                                console.log('API Response:', response);
+                                                alert('Image processed successfully!');
+                                            } catch (error) {
+                                                console.error('Error processing image:', error);
+                                                alert('Failed to process the image. Please try again.');
+                                            }
+                                        } else {
+                                            alert('Please upload an image before extracting.');
+                                        }
+                                    }}>
                                 Extract Now
                             </Button>
                         </div>
