@@ -3,6 +3,7 @@
 import React, { useState, useRef, useImperativeHandle } from 'react'
 import { ImagePlus, X, Loader2 } from 'lucide-react'
 import {useImageStore} from "@/store/useImageStore";
+import {images} from "next/dist/build/webpack/config/blocks/images";
 
 export interface ImageFile {
     file: File
@@ -15,7 +16,8 @@ export interface ImageUploadRef {
 
 export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => {
     const [isDragging, setIsDragging] = useState(false)
-    const [images, setImages] = useState<ImageFile[]>([])
+    // const [images, setImages] = useState<ImageFile[]>([])
+    const images = useImageStore((state) => state.images)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -60,7 +62,7 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                 newImages.push({ file, preview })
             }
 
-            setImages((prev) => [...prev, ...newImages])
+            // setImages((prev) => [...prev, ...newImages])
             addImagesToStore(newImages)
 
         } finally {
@@ -101,12 +103,13 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
     }
 
     const removeImage = (index: number) => {
-        setImages((prev) => {
-            const updated = [...prev]
-            URL.revokeObjectURL(updated[index].preview)
-            updated.splice(index, 1)
-            return updated
-        })
+        // setImages((prev) => {
+        //     const updated = [...prev]
+        //     URL.revokeObjectURL(updated[index].preview)
+        //     updated.splice(index, 1)
+        //     return updated
+        // })
+        useImageStore.getState().removeImage(index)
     }
 
     useImperativeHandle(ref, () => ({

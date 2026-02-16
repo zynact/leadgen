@@ -2,7 +2,7 @@ import {create} from "zustand/react";
 import {ImageFile} from "@/components/image-upload";
 
 type ImageState = {
-    images: File[]
+    images: ImageFile[]
     addImages: (files: ImageFile[]) => void
     removeImage: (index: number) => void
     clearImages: () => void
@@ -12,7 +12,7 @@ export const useImageStore = create<ImageState>((set) => ({
     images: [],
     addImages: (files: ImageFile[]) => {
         set((state) => ({
-            images: [...state.images, ...files.map((image) => image.file)],
+            images: [...state.images, ...files],
         }))
     },
     removeImage: (index: number) => {
