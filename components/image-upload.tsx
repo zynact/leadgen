@@ -15,15 +15,12 @@ export interface ImageUploadRef {
 
 export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => {
     const [isDragging, setIsDragging] = useState(false)
-    // const [images, setImages] = useState<ImageFile[]>([])
     const images = useImageStore((state) => state.images)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const addImagesToStore = useImageStore((state) => state.addImages)
-    const removeImageFromStore = useImageStore((state) => state.removeImage)
-    const clearImagesFromStore = useImageStore((state) => state.clearImages)
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -61,7 +58,6 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                 newImages.push({ file, preview })
             }
 
-            // setImages((prev) => [...prev, ...newImages])
             addImagesToStore(newImages)
 
         } finally {
@@ -102,12 +98,6 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
     }
 
     const removeImage = (index: number) => {
-        // setImages((prev) => {
-        //     const updated = [...prev]
-        //     URL.revokeObjectURL(updated[index].preview)
-        //     updated.splice(index, 1)
-        //     return updated
-        // })
         useImageStore.getState().removeImage(index)
     }
 
