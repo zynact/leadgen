@@ -4,6 +4,7 @@ import {useRef, useEffect} from "react";
 import {ImageUpload, ImageUploadRef} from '@/components/image-upload'
 import {Button} from "@/components/custom/Button";
 import imageProcess from "@/lib/api/image-process";
+import {useImageStore} from "@/store/useImageStore";
 
 export default function Page() {
     const imageUploadRef = useRef<ImageUploadRef>(null);
@@ -66,10 +67,10 @@ export default function Page() {
                         <div className="mt-10 flex justify-end">
                             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
                                     onClick={async () => {
-                                        const files = imageUploadRef.current?.getFiles();
+                                        const files = useImageStore.getState().images;
                                         if (files && files.length > 0) {
                                             try {
-                                                const response = await imageProcess(files[0]);
+                                                const response = await imageProcess(files);
                                                 console.log('API Response:', response);
                                                 alert('Image processed successfully!');
                                             } catch (error) {

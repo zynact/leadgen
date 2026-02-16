@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useImperativeHandle } from 'react'
 import { ImagePlus, X, Loader2 } from 'lucide-react'
+import {useImageStore} from "@/store/useImageStore";
 
-interface ImageFile {
+export interface ImageFile {
     file: File
     preview: string
 }
@@ -18,6 +19,10 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    const addImagesToStore = useImageStore((state) => state.addImages)
+    const removeImageFromStore = useImageStore((state) => state.removeImage)
+    const clearImagesFromStore = useImageStore((state) => state.clearImages)
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -56,6 +61,8 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
             }
 
             setImages((prev) => [...prev, ...newImages])
+            addImagesToStore(newImages)
+
         } finally {
             setIsLoading(false)
         }
