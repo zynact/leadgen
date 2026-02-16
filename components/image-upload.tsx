@@ -3,7 +3,6 @@
 import React, { useState, useRef, useImperativeHandle } from 'react'
 import { ImagePlus, X, Loader2 } from 'lucide-react'
 import {useImageStore} from "@/store/useImageStore";
-import {images} from "next/dist/build/webpack/config/blocks/images";
 
 export interface ImageFile {
     file: File
