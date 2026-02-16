@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useImperativeHandle } from 'react'
 import { ImagePlus, X, Loader2 } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
 
 interface ImageFile {
     file: File
@@ -135,17 +134,14 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                 />
 
                 <div className="flex flex-col items-center justify-center gap-4 text-center">
-                    <motion.div
-                        whileHover={{ scale: 1.1, rotate: -3 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    >
+                    <div className="transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:-rotate-3">
                         <ImagePlus
                             size={48}
                             className={`transition-colors duration-200 
                                 ${isDragging ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-blue-500'}`
                             }
                         />
-                    </motion.div>
+                    </div>
                     <div>
                         <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                             Drop your image here or <span className="text-blue-600 dark:text-blue-400">browse</span>
@@ -169,54 +165,41 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
             )}
 
             {/* Image Gallery */}
-            <AnimatePresence>
-                {images.length > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="mt-8"
-                    >
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                            Uploaded ({images.length})
-                        </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            <AnimatePresence>
-                                {images.map((item, index) => (
-                                    <motion.div
-                                        key={item.preview}
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                        className="relative group aspect-square"
+            {images.length > 0 && (
+                <div className="mt-8">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        Uploaded ({images.length})
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {images.map((item, index) => (
+                            <div
+                                key={item.preview}
+                                className="relative group aspect-square"
+                            >
+                                <img
+                                    src={item.preview}
+                                    alt={`Preview ${index + 1}`}
+                                    onLoad={() => URL.revokeObjectURL(item.preview)} // Clean up memory
+                                    className="w-full h-full object-cover rounded-xl shadow-md"
+                                />
+                                <div
+                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            removeImage(index)
+                                        }}
+                                        className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-transform transform-gpu hover:scale-110"
+                                        aria-label="Remove image"
                                     >
-                                        <img
-                                            src={item.preview}
-                                            alt={`Preview ${index + 1}`}
-                                            onLoad={() => URL.revokeObjectURL(item.preview)} // Clean up memory
-                                            className="w-full h-full object-cover rounded-xl shadow-md"
-                                        />
-                                        <div
-                                            className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    removeImage(index)
-                                                }}
-                                                className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-transform transform-gpu hover:scale-110"
-                                                aria-label="Remove image"
-                                            >
-                                                <X size={18}/>
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                        <X size={18}/>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
 })
