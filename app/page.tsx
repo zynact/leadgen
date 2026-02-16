@@ -72,13 +72,14 @@ export default function Page() {
                                             try {
                                                 const response = await imageProcess(files);
                                                 console.log('API Response:', response);
-                                                alert('Image processed successfully!');
                                             } catch (error) {
-                                                console.error('Error processing image:', error);
-                                                alert('Failed to process the image. Please try again.');
+                                                console.log('Error processing image:', error);
+                                            }
+                                            finally {
+                                                useImageStore.getState().clearImages();
                                             }
                                         } else {
-                                            alert('Please upload an image before extracting.');
+                                            console.log('Please upload an image before extracting.');
                                         }
                                     }}>
                                 Extract Now
