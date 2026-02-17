@@ -6,7 +6,7 @@ export default async function imageProcess(images: File[]) {
     "use server"
 
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    const MATTERMOST_WEBHOOK_URL = "https://your-mattermost-webhook-url"; // Replace with your Mattermost webhook URL
+    const MATTERMOST_WEBHOOK_URL = process.env.MATTERMOST_WEBHOOK_URL || "";
 
     try {
         const results = await Promise.all(images.map(async (image) => {
@@ -47,18 +47,18 @@ export default async function imageProcess(images: File[]) {
 
             console.log("Extracted text:", extractedText);
 
-            const mattermostResponse = await fetch(MATTERMOST_WEBHOOK_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({text: extractedText}),
-            });
-
-            if (!mattermostResponse.ok) {
-                console.error("Mattermost webhook error:", await mattermostResponse.text());
-                return {success: false, error: "Failed to send message to Mattermost"};
-            }
+            // const mattermostResponse = await fetch(MATTERMOST_WEBHOOK_URL, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({text: extractedText}),
+            // });
+            //
+            // if (!mattermostResponse.ok) {
+            //     console.error("Mattermost webhook error:", await mattermostResponse.text());
+            //     return {success: false, error: "Failed to send message to Mattermost"};
+            // }
 
             return {success: true, extractedText};
         }));
