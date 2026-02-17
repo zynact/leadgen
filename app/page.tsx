@@ -5,6 +5,7 @@ import {ImageUpload, ImageUploadRef} from '@/components/image-upload'
 import {Button} from "@/components/custom/Button";
 import imageProcess from "@/lib/api/image-process";
 import {useImageStore} from "@/store/useImageStore";
+import toast from "react-hot-toast";
 
 export default function Page() {
     const imageUploadRef = useRef<ImageUploadRef>(null);
@@ -76,8 +77,10 @@ export default function Page() {
                                                 response.forEach(res => {
                                                     if(res.success) {
                                                         console.log('Markdown content:', res.extractedText);
+                                                        toast.success('Image processed successfully!');
                                                     } else {
                                                         console.error('Error processing image:', res.error);
+                                                        toast.error(`Error: ${res.error}`);
                                                     }
                                                 });
                                             } catch (error) {
@@ -88,6 +91,7 @@ export default function Page() {
                                                 useImageStore.getState().clearImages();
                                             }
                                         } else {
+                                            toast.error(`Please upload an image before extracting.`);
                                             console.log('Please upload an image before extracting.');
                                         }
                                     }}>
