@@ -67,10 +67,11 @@ export default function Page() {
                         <div className="mt-10 flex justify-end">
                             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
                                     onClick={async () => {
-                                        const files = useImageStore.getState().images;
-                                        if (files && files.length > 0) {
+                                        const imageFiles = useImageStore.getState().images;
+                                        if (imageFiles && imageFiles.length > 0) {
                                             try {
-                                                const response = await imageProcess(files[0].file);
+                                                const files = imageFiles.map(f => f.file);
+                                                const response = await imageProcess(files);
                                                 console.log('API Response:', response);
                                             } catch (error) {
                                                 console.log('Error processing image:', error);
