@@ -62,7 +62,7 @@ export default function Page() {
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Upload Your Image</h2>
                             <p className="text-gray-500 dark:text-gray-400 mt-2">Drag and drop, paste, or click to
-                                select a file from your device.</p>
+                                select image from your device.</p>
                         </div>
                         <ImageUpload ref={imageUploadRef}/>
                         <div className="mt-10 flex justify-end">
