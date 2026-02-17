@@ -11,6 +11,7 @@ export interface ImageFile {
 
 export interface ImageUploadRef {
     addFiles: (files: FileList) => void;
+    setLoading: (loading: boolean) => void;
 }
 
 export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => {
@@ -39,7 +40,7 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
         if (!files || files.length === 0) return
 
         setError(null)
-        setIsLoading(true)
+        // setIsLoading(true) // This is now controlled by the parent component
 
         try {
             const newImages: ImageFile[] = []
@@ -61,7 +62,7 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
             addImagesToStore(newImages)
 
         } finally {
-            setIsLoading(false)
+            // setIsLoading(false) // This is now controlled by the parent component
         }
     }
 
@@ -101,32 +102,12 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
         useImageStore.getState().removeImage(index)
     }
 
-    const handleImageProcessing = async () => {
-        if (images.length === 0) return;
-
-        const imageFile = images[0].file;
-        const formData = new FormData();
-        formData.append('file', imageFile);
-
-        try {
-            const res = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (res.ok) {
-                console.log('Image processed successfully');
-            } else {
-                console.error('Error processing image');
-            }
-        } catch (error) {
-            console.error('Error processing image:', error);
-        }
-    };
-
     useImperativeHandle(ref, () => ({
         addFiles: (files: FileList) => {
             handleFiles(files);
+        },
+        setLoading: (loading: boolean) => {
+            setIsLoading(loading);
         }
     }));
 

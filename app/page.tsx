@@ -70,6 +70,7 @@ export default function Page() {
                                         const imageFiles = useImageStore.getState().images;
                                         if (imageFiles && imageFiles.length > 0) {
                                             try {
+                                                imageUploadRef.current?.setLoading(true);
                                                 const files = imageFiles.map(f => f.file);
                                                 const response = await imageProcess(files);
                                                 console.log('API Response:', response);
@@ -77,6 +78,7 @@ export default function Page() {
                                                 console.log('Error processing image:', error);
                                             }
                                             finally {
+                                                imageUploadRef.current?.setLoading(false);
                                                 useImageStore.getState().clearImages();
                                             }
                                         } else {
