@@ -70,7 +70,7 @@ export default function Page() {
                                         const files = useImageStore.getState().images;
                                         if (files && files.length > 0) {
                                             try {
-                                                const response = await imageProcess(files);
+                                                const response = await imageProcess(files[0].file);
                                                 console.log('API Response:', response);
                                             } catch (error) {
                                                 console.log('Error processing image:', error);

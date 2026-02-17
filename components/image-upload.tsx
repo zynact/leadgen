@@ -101,6 +101,29 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
         useImageStore.getState().removeImage(index)
     }
 
+    const handleImageProcessing = async () => {
+        if (images.length === 0) return;
+
+        const imageFile = images[0].file;
+        const formData = new FormData();
+        formData.append('file', imageFile);
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (res.ok) {
+                console.log('Image processed successfully');
+            } else {
+                console.error('Error processing image');
+            }
+        } catch (error) {
+            console.error('Error processing image:', error);
+        }
+    };
+
     useImperativeHandle(ref, () => ({
         addFiles: (files: FileList) => {
             handleFiles(files);

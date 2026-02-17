@@ -1,11 +1,73 @@
 "use server"
 
-export default async function imageProcess(image: any) {
-    "use server"
-    console.log("Processing image:", image)
+import {fetch} from "undici";
 
-    return {
-        success: true,
+export default async function imageProcess(image: File) {
+    "use server"
+
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    const MATTERMOST_WEBHOOK_URL = "https://your-mattermost-webhook-url"; // Replace with your Mattermost webhook URL
+
+    try {
+        // 1. Call ChatGPT API
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const base64 = buffer.toString("base64");
+
+        const openAIResponse = await fetch("https://api.openai.com/v1/responses", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${OPENAI_API_KEY}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                model: "gpt-4.1",
+                input: [
+                    {
+                        role: "user",
+                        content: [
+                            {type: "input_text", text: "Extract the info from the image."},
+                            {
+                                type: "input_image",
+                                image_url: `data:image/jpeg;base64,${base64}`
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
+
+
+
+        if (!openAIResponse.ok) {
+            console.error("OpenAI API error:", await openAIResponse.text());
+            return {success: false, error: "Failed to process image with OpenAI"};
+        }
+
+        const openAIResult: any = await openAIResponse.json();
+        console.log("OpenAI API response:", openAIResult);
+        // const extractedText = openAIResult.choices[0].message.content;
+
+        // console.log("Extracted text:", extractedText);
+
+        // 2. Call Mattermost Webhook
+        const mattermostResponse = await fetch(MATTERMOST_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({text: extractedText}),
+        });
+
+        if (!mattermostResponse.ok) {
+            console.error("Mattermost webhook error:", await mattermostResponse.text());
+            return {success: false, error: "Failed to send message to Mattermost"};
+        }
+
+        return {success: true, extractedText};
+    } catch (error) {
+        console.error("Error processing image:", error);
+        return {success: false, error: "Internal server error"};
     }
 }
 
