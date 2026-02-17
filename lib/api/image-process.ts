@@ -9,7 +9,6 @@ export default async function imageProcess(image: File) {
     const MATTERMOST_WEBHOOK_URL = "https://your-mattermost-webhook-url"; // Replace with your Mattermost webhook URL
 
     try {
-        // 1. Call ChatGPT API
         const bytes = await image.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const base64 = buffer.toString("base64");
@@ -45,24 +44,23 @@ export default async function imageProcess(image: File) {
         }
 
         const openAIResult: any = await openAIResponse.json();
-        console.log("OpenAI API response:", openAIResult);
-        // const extractedText = openAIResult.choices[0].message.content;
+        console.log("OpenAI API response:", openAIResult.output[0].content[0]);
+        const extractedText = openAIResult.output[0].content[0].text;
 
-        // console.log("Extracted text:", extractedText);
+        console.log("Extracted text:", extractedText);
 
-        // 2. Call Mattermost Webhook
-        const mattermostResponse = await fetch(MATTERMOST_WEBHOOK_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({text: extractedText}),
-        });
+        // const mattermostResponse = await fetch(MATTERMOST_WEBHOOK_URL, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({text: extractedText}),
+        // });
 
-        if (!mattermostResponse.ok) {
-            console.error("Mattermost webhook error:", await mattermostResponse.text());
-            return {success: false, error: "Failed to send message to Mattermost"};
-        }
+        // if (!mattermostResponse.ok) {
+        //     console.error("Mattermost webhook error:", await mattermostResponse.text());
+        //     return {success: false, error: "Failed to send message to Mattermost"};
+        // }
 
         return {success: true, extractedText};
     } catch (error) {
