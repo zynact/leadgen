@@ -14,6 +14,8 @@ export default async function imageProcess(images: File[]) {
             const buffer = Buffer.from(bytes);
             const base64 = buffer.toString("base64");
 
+            const prompt = `Extract the 'posted by' and 'post content' from the image. Return a JSON object with 'postedBy', 'postContent' (in Markdown), and 'markdown_confidence' (0-100). If 'postedBy' is absent, use 'Author Unavailable'. The 'postContent' should be formatted in markdown.`;
+
             const openAIResponse = await fetch("https://api.openai.com/v1/responses", {
                 method: "POST",
                 headers: {
@@ -26,7 +28,7 @@ export default async function imageProcess(images: File[]) {
                         {
                             role: "user",
                             content: [
-                                {type: "input_text", text: "Extract the 'posted by' and 'post content' from the image and return it as a JSON object with keys 'postedBy' and 'postContent'. If there is no 'postedBy', return it as 'Author Unavailable'."},
+                                {type: "input_text", text: prompt},
                                 {
                                     type: "input_image",
                                     image_url: `data:image/jpeg;base64,${base64}`
@@ -43,13 +45,18 @@ export default async function imageProcess(images: File[]) {
             }
 
             const openAIResult: any = await openAIResponse.json();
+            console.log("OpenAI API response received successfully", openAIResult.output[0].content[0]);
             const extractedText = openAIResult.output[0].content[0].text;
             let markdown;
 
             try {
                 const cleaned = extractedText.replace(/```json\n?|\n?```/g, "").trim();
                 const openAIJson = JSON.parse(cleaned);
-                // markdown = `### Posted by: ${openAIJson.postedBy}\n### Content: ${openAIJson.postContent}`;
+
+                if (openAIJson.markdown_confidence < 50) {
+                    return {success: false, error: "Markdown confidence too low"};
+                }
+
                 markdown = `### ${openAIJson.postedBy}\n${openAIJson.postContent}`;
             } catch (error) {
                 markdown = extractedText;

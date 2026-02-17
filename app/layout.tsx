@@ -8,9 +8,7 @@ const _geist = Geist({ subsets: ['latin'] })
 const _geistMono = Geist_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Image Upload - Elegant File Management',
-  description: 'A sophisticated, minimalist image upload interface with drag-and-drop support and real-time preview',
-  generator: 'v0.app',
+  title: 'LeadGen',
 }
 
 export default function RootLayout({
