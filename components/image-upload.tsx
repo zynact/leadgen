@@ -146,7 +146,7 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                         <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                             Drop your image here or <span className="text-blue-600 dark:text-blue-400">browse</span>
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Maximum file size is 10MB</p>
+                        {/*<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Maximum file size is 10MB</p>*/}
                     </div>
                 </div>
 
