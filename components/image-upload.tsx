@@ -40,7 +40,6 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
         if (!files || files.length === 0) return
 
         setError(null)
-        // setIsLoading(true) // This is now controlled by the parent component
 
         try {
             const newImages: ImageFile[] = []
@@ -62,7 +61,6 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
             addImagesToStore(newImages)
 
         } finally {
-            // setIsLoading(false) // This is now controlled by the parent component
         }
     }
 
@@ -113,7 +111,6 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
 
     return (
         <div className="w-full">
-            {/* Upload Area */}
             <div
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -160,14 +157,12 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                 )}
             </div>
 
-            {/* Error Message */}
             {error && (
                 <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-lg dark:bg-red-900/20 dark:border-red-700">
                     <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
                 </div>
             )}
 
-            {/* Image Gallery */}
             {images.length > 0 && (
                 <div className="mt-8">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -182,7 +177,7 @@ export const ImageUpload = React.forwardRef<ImageUploadRef, {}>((props, ref) => 
                                 <img
                                     src={item.preview}
                                     alt={`Preview ${index + 1}`}
-                                    onLoad={() => URL.revokeObjectURL(item.preview)} // Clean up memory
+                                    onLoad={() => URL.revokeObjectURL(item.preview)}
                                     className="w-full h-full object-cover rounded-xl shadow-md"
                                 />
                                 <div
