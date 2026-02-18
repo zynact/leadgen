@@ -1,0 +1,53 @@
+name: LeadGen Staging Deployment
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create environment file
+        run: |
+          cat > .env << EOENV
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          MATTERMOST_WEBHOOK_URL=${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          NEXT_MACHINE_PORT=${{ vars.NEXT_MACHINE_PORT }}
+          NODE_ENV=production
+          EOENV
+
+      - name: Deploy code to server
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "./"
+          target: "/home/development/leadgen"
+          rm: true  # Remove files not in source
+          exclude: ".git,node_modules"
+
+      - name: Deploy with Docker
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/development/leadgen
+            docker compose down
+            docker system prune -f
+            docker compose up -d --build
+            docker compose ps
+
+      - name: Clean up
+        run: rm -rf ./*
+        if: always()
